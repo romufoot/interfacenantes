@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Nantes - Stats en Direct</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .scoreboard {
+            font-size: 48px;
+            margin: 20px;
+        }
+        .team {
+            font-size: 24px;
+        }
+        .possession, .ranking {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        .composition {
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: left;
+            padding-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard">
+        <div id="score">0 - 0</div>
+        <div id="teams" class="team">FC Nantes vs <span id="opponent">Adversaire</span></div>
+        <div id="possession" class="possession">Possession: 50% - 50%</div>
+        <div id="ranking" class="ranking">Classement: 5ème - 8ème</div>
+        <div class="composition">
+            <strong>Composition des équipes :</strong>
+            <div id="nantes-formation">FC Nantes : 4-3-3</div>
+            <div id="opponent-formation">Adversaire : 4-4-2</div>
+        </div>
+    </div>
+
+    <script>
+        // Exemple d'URL d'une API fictive (remplace cette URL par une API réelle)
+        const apiUrl = https://dashboard.api-football.com/
+
+        function fetchMatchData() {
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '2001d8992fced0120b9ed1b456ebe1bc', // 
+                    'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const match = data.response[0]; // On suppose que la première réponse est le match en cours
+                document.getElementById('score').innerText = `${match.goals.home} - ${match.goals.away}`;
+                document.getElementById('teams').innerText = `FC Nantes vs ${match.team.away.name}`;
+                document.getElementById('possession').innerText = `Possession: ${match.stats.home.possession}% - ${match.stats.away.possession}%`;
+                document.getElementById('ranking').innerText = `Classement: FC Nantes ${match.home.rank} - ${match.away.rank} Adversaire`;
+                document.getElementById('nantes-formation').innerText = `FC Nantes : ${match.lineup.home.formation}`;
+                document.getElementById('opponent-formation').innerText = `Adversaire : ${match.lineup.away.formation}`;
+            })
+            .catch(error => console.error('Erreur API:', error));
+        }
+
+        setInterval(fetchMatchData, 30000); // Mise à jour toutes les 30 secondes
+        fetchMatchData(); // Chargement initial des données
+    </script>
+</body>
+</html>
